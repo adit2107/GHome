@@ -22,15 +22,16 @@ exports.targetApp = functions.https.onRequest((request, response) => {
   console.log('Request body: ' + JSON.stringify(request.body));
 
   function sendValue(app){
-    console.log("Response from google: " + response.parameters);
     let value = app.getArgument(METRIC);
 
-    if(ISPEED){
-    app.ask('You increased by ' + value);
-    }
+    // if(ISPEED){
+    // app.ask('You increased by ' + value);
+    // }
 
     if(DSPEED){
       app.ask('You decreased by ' + value);
+    }else if(ISPEED){
+      app.ask('You increased by ' + value);
     }
   }
 
