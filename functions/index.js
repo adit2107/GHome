@@ -11,6 +11,9 @@ process.env.DEBUG = 'actions-on-google:*';
 const functions = require('firebase-functions');
 const App = require('actions-on-google').DialogflowApp;
 
+const mqtt = require('mqtt');
+var client = mqtt.connect('mqtt://iot.eclipse.org', 1883);
+
 const ISPEED = 'inc_speed'
 const DSPEED = 'dec_speed'
 
@@ -23,16 +26,21 @@ exports.targetApp = functions.https.onRequest((request, response) => {
 
   function sendValue(app){
     let value = app.getArgument(METRIC);
-
-    // if(ISPEED){
-    // app.ask('You increased by ' + value);
-    // }
-
-    if(DSPEED){
+    const intent = app.getIntent();
+    if(intent === DSPEED){
       app.ask('You decreased by ' + value);
     }else if(ISPEED){
       app.ask('You increased by ' + value);
     }
+
+    client.on('connect', function() {
+      let value = app.getArgument(METRIC);
+      console.log("Value is: " + value);
+
+      client.publish('target/value', value);
+
+      console.log("Published");
+    })
   }
 
   let actionMap = new Map();
