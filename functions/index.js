@@ -29,7 +29,7 @@ exports.targetApp = functions.https.onRequest((request, response) => {
     const intent = app.getIntent();
     if(intent === DSPEED){
       app.ask('You decreased by ' + value);
-    }else if(ISPEED){
+    }else if(intent === ISPEED){
       app.ask('You increased by ' + value);
     }
 
